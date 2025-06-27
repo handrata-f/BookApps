@@ -23,6 +23,7 @@ class APIManager {
         }
         headers.add(name: "Application-ID", value: "SWS1:OD-DigXCI:1c8f21b5b9")
         if let sessionID = UserDefaults.standard.string(forKey: "sessionId") {
+            print("SessionID: \(sessionID)")
             headers.add(name: "Session-ID", value: sessionID)
         }
         return headers
@@ -72,7 +73,7 @@ class APIManager {
         AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: commonHeaders)
             .validate()
             .responseDecodable(of: PassengerDetailResponse.self) { response in
-                if let sessionID = response.response?.allHeaderFields["Session-ID"] as? String {
+                if let sessionID = response.response?.allHeaderFields["session-id"] as? String {
                     UserDefaults.standard.set(sessionID, forKey: "sessionId")
                 }
                 switch response.result {
@@ -88,6 +89,7 @@ class APIManager {
     func savePassengerDocuments(payload: [String: Any], completion: @escaping (Result<PassengerDocumentSaveResponse, Error>) -> Void) {
         let url = "\(baseURL)/v918/dcci/passenger/update?jipcc=ODCI"
 
+        print("Body: \(payload.description)")
         AF.request(url, method: .post, parameters: payload, encoding: JSONEncoding.default, headers: commonHeaders)
             .validate()
             .responseDecodable(of: PassengerDocumentSaveResponse.self) { response in
@@ -101,7 +103,7 @@ class APIManager {
     }
 
     // MARK: - Pax Check-in
-    func checkInPassenger(passengerIds: [String], completion: @escaping (Result<Data, Error>) -> Void) {
+    func checkInPassenger(passengerIds: [String], completion: @escaping (Result<CheckInPassengerResponse, Error>) -> Void) {
         let url = "\(baseURL)/v918/dcci/passenger/checkin?jipcc=ODCI"
         let body: [String: Any] = [
             "returnSession": false,
@@ -112,10 +114,10 @@ class APIManager {
 
         AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: commonHeaders)
             .validate()
-            .responseData { response in
+            .responseDecodable(of: CheckInPassengerResponse.self) { response in
                 switch response.result {
-                case .success(let data):
-                    completion(.success(data))
+                case .success(let checkInResponse):
+                    completion(.success(checkInResponse))
                 case .failure(let error):
                     completion(.failure(error))
                 }
@@ -123,20 +125,20 @@ class APIManager {
     }
 
     // MARK: - Boarding Pass
-    func getBoardingPass(passengerFlightId: String, completion: @escaping (Result<Data, Error>) -> Void) {
+    func getBoardingPass(passengerFlightIds: [String], completion: @escaping (Result<GetBoardingPassResponse, Error>) -> Void) {
         let url = "\(baseURL)/v918/dcci/passenger/boardingpass?jipcc=ODCI"
         let body: [String: Any] = [
             "returnSession": true,
-            "passengerFlightIds": [passengerFlightId],
+            "passengerFlightIds": passengerFlightIds,
             "outputFormat": "BPXML"
         ]
 
         AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: commonHeaders)
             .validate()
-            .responseData { response in
+            .responseDecodable(of: GetBoardingPassResponse.self) { response in
                 switch response.result {
-                case .success(let data):
-                    completion(.success(data))
+                case .success(let boardingPassResponse):
+                    completion(.success(boardingPassResponse))
                 case .failure(let error):
                     completion(.failure(error))
                 }

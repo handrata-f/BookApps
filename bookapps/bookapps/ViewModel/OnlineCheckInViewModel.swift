@@ -30,10 +30,10 @@ class OnlineCheckInViewModel: ObservableObject {
 
     func buttonContinueAction() {
         // Your check-in logic here
-        print("Submitted PNR: \(pnr), Last Name: \(lastName)")
+        print("Submitted PNR: \(pnr.uppercased()), Last Name: \(lastName)")
 
         isLoading = true
-        APIManager.shared.getPassengerDetails(recordLocator: pnr, lastName: lastName) { [weak self] result in
+        APIManager.shared.getPassengerDetails(recordLocator: pnr.uppercased(), lastName: lastName) { [weak self] result in
             self?.isLoading = false
             switch result {
             case .success(let detail):
