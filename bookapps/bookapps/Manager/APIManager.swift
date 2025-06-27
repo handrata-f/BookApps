@@ -103,7 +103,7 @@ class APIManager {
     }
 
     // MARK: - Pax Check-in
-    func checkInPassenger(passengerIds: [String], completion: @escaping (Result<CheckInPassengerResponse, Error>) -> Void) {
+    func checkInPassenger(passengerIds: [String], completion: @escaping (Result<String, Error>) -> Void) {
         let url = "\(baseURL)/v918/dcci/passenger/checkin?jipcc=ODCI"
         let body: [String: Any] = [
             "returnSession": false,
@@ -112,12 +112,15 @@ class APIManager {
             "waiveAutoReturnCheckIn": false
         ]
 
-        AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: commonHeaders)
+        var newHeader = commonHeaders
+        newHeader.add(name: "Content-Type", value: "application/json")
+
+        AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: newHeader)
             .validate()
-            .responseDecodable(of: CheckInPassengerResponse.self) { response in
+            .responseString { response in
                 switch response.result {
-                case .success(let checkInResponse):
-                    completion(.success(checkInResponse))
+                case .success(let string):
+                    completion(.success(string))
                 case .failure(let error):
                     completion(.failure(error))
                 }
@@ -125,7 +128,7 @@ class APIManager {
     }
 
     // MARK: - Boarding Pass
-    func getBoardingPass(passengerFlightIds: [String], completion: @escaping (Result<GetBoardingPassResponse, Error>) -> Void) {
+    func getBoardingPass(passengerFlightIds: [String], completion: @escaping (Result<String, Error>) -> Void) {
         let url = "\(baseURL)/v918/dcci/passenger/boardingpass?jipcc=ODCI"
         let body: [String: Any] = [
             "returnSession": true,
@@ -133,12 +136,15 @@ class APIManager {
             "outputFormat": "BPXML"
         ]
 
-        AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: commonHeaders)
+        var newHeader = commonHeaders
+        newHeader.add(name: "Content-Type", value: "application/json")
+
+        AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: newHeader)
             .validate()
-            .responseDecodable(of: GetBoardingPassResponse.self) { response in
+            .responseString { response in
                 switch response.result {
-                case .success(let boardingPassResponse):
-                    completion(.success(boardingPassResponse))
+                case .success(let responseString):
+                    completion(.success(responseString))
                 case .failure(let error):
                     completion(.failure(error))
                 }

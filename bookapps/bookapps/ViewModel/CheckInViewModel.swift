@@ -31,11 +31,17 @@ class CheckInViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 self?.passengerFlightIds = []
-                for boardingPass in response.boardingPasses {
-                    self?.passengerFlightIds.append(boardingPass.passengerFlightId)
-                }
                 print("✅ Save successful: \(response)")
-                self?.navigateToBoardingPass = true
+                if let responseDic = convertToDictionary(from: response) {
+                    if let boardingPasses = responseDic["boardingPasses"] as? [[String: Any]] {
+                        for boardingPass in boardingPasses {
+                            if let passengerFlightId = boardingPass["passengerFlightId"] as? String {
+                                self?.passengerFlightIds.append(passengerFlightId)
+                            }
+                        }
+                        self?.navigateToBoardingPass = true
+                    }
+                }
             case .failure(let error):
                 print("❌ Save failed: \(error.localizedDescription)")
             }

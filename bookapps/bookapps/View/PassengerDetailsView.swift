@@ -106,7 +106,7 @@ struct PassengerCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 10) {
-                Text("\(passenger.personName.first) \(passenger.personName.last)")
+                Text("\(passenger.personName.last) \(passenger.personName.first)")
                     .helveticaFont(size: 18, weight: .semibold)
 
                 if let itinerary = itinerary,

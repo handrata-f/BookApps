@@ -34,9 +34,9 @@ class PassengerDetailsViewModel: ObservableObject {
             }
 
             let document: [String: Any] = [
-                "number": passportNumber ?? "",
+                "number": passportNumber ?? "SqKSLArJg",
                 "personName": [
-                    "prefix": passenger.personName.prefix ?? "",
+                    "prefix": passenger.personName.prefix ?? "Mr",
                     "first": passenger.personName.first,
                     "last": passenger.personName.last
                 ],
