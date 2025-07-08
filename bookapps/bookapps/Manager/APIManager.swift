@@ -26,6 +26,7 @@ class APIManager {
             print("SessionID: \(sessionID)")
             headers.add(name: "Session-ID", value: sessionID)
         }
+        
         return headers
     }
 
@@ -115,6 +116,7 @@ class APIManager {
         var newHeader = commonHeaders
         newHeader.add(name: "Content-Type", value: "application/json")
 
+        print("URL: \(url)\nHeader: \(newHeader.description)\nBody: \(body)")
         AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: newHeader)
             .validate()
             .responseString { response in
@@ -139,6 +141,7 @@ class APIManager {
         var newHeader = commonHeaders
         newHeader.add(name: "Content-Type", value: "application/json")
 
+        print("URL: \(url)\nHeader: \(newHeader.description)\nBody: \(body)")
         AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: newHeader)
             .validate()
             .responseString { response in

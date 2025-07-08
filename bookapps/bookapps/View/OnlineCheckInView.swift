@@ -11,6 +11,7 @@ struct OnlineCheckInView: View {
     @StateObject private var viewModel = OnlineCheckInViewModel()
     @FocusState private var focusedField: Field?
     @State private var isFirstAppear: Bool = true
+    @Environment(\.dismiss) var dismiss
 
     enum Field {
         case pnr, lastName
@@ -85,6 +86,13 @@ struct OnlineCheckInView: View {
                             .foregroundColor(.white)
                             .cornerRadius(12)
                     }
+//                    .alert(viewModel.errorTitle, isPresented: $viewModel.showErrorAlert) {
+//                        Button("OK", role: .cancel) {
+//                            dismiss()
+//                        }
+//                    } message: {
+//                        Text(viewModel.errorMessage)
+//                    }
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 20)

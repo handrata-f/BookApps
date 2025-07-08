@@ -63,3 +63,9 @@ func generateBarcode(from string: String) -> UIImage? {
     print("✅ Transparent Barcode Image generated successfully.")
     return uiImage
 }
+
+func dateToString(_ date: Date, _ dateFormat: String = "yyyy-MM-dd") -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = dateFormat
+    return dateFormatter.string(from: date)
+}

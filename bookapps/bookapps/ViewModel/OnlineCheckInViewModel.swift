@@ -13,8 +13,10 @@ class OnlineCheckInViewModel: ObservableObject {
     @Published var lastName: String = ""
     @Published var isLoading: Bool = false
     @Published var passengerDetail: PassengerDetailResponse? = nil
-    @Published var errorMessage: String?
     @Published var navigateToDetails: Bool = false
+    @Published var showErrorAlert: Bool = false
+    @Published var errorTitle: String = "Error"
+    @Published var errorMessage: String = ""
 
     func requestToken() {
         APIManager.shared.requestToken { [weak self] result in
@@ -23,6 +25,7 @@ class OnlineCheckInViewModel: ObservableObject {
                 Swift.print("✅ Request Token loaded : \(detail)")
                 // you can also trigger navigation or UI update here
             case .failure(let error):
+                self?.showErrorAlert = true
                 self?.errorMessage = "Failed to fetch request token: \(error.localizedDescription)"
                 Swift.print("❌ \(error)")
             }}
@@ -42,6 +45,7 @@ class OnlineCheckInViewModel: ObservableObject {
                 // you can also trigger navigation or UI update here
                 self?.navigateToDetails = true
             case .failure(let error):
+                self?.showErrorAlert = true
                 self?.errorMessage = "Failed to fetch passenger details: \(error.localizedDescription)"
                 Swift.print("❌ \(error)")
             }

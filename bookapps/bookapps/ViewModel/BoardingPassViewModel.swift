@@ -36,7 +36,7 @@ class BoardingPassViewModel: ObservableObject {
         guard let boardingPasses = responseDic["boardingPasses"] as? [[String: Any]] else { return }
 
         var currentBoardingPassInfos: [BoardingPassInfo] = []
-        for (idx, boardingPass) in boardingPasses.enumerated() {
+        for (_, boardingPass) in boardingPasses.enumerated() {
             var fullName: String = ""
             var flightInfo: String = ""
             var gate: String = ""
